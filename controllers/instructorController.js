@@ -1,14 +1,11 @@
 const instructorService = require("../services/instructorService");
 
-const getInstructors = async (req, res) => {
-    try {
-        const { limit, offset } = req.query;
+const getInstructorDetail = async (req, res) => {
+    try { 
+        const { instructorId } = req.params;
 
-        if (!limit || !offset) {
-            return res.status(400).json({ message : "KEY_ERROR"});
-        }
-        const getInstructors = await instructorService.getInstructors(limit, offset);
-        return res.status(200).json({ instructors : getInstructors});
+        const getInstructorDetail = await instructorService.getInstructorDetail(instructorId);
+        return res.status(200).json({ instructor : getInstructorDetail });
 
     } catch (err) {
         return res.status(err.statusCode || 500).json({ message : err.message });
@@ -16,5 +13,5 @@ const getInstructors = async (req, res) => {
 };
 
 module.exports = {
-    getInstructors
+    getInstructorDetail
 };
