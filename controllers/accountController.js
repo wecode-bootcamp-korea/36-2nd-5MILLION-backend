@@ -1,11 +1,21 @@
 const accountService = require("../services/accountService");
 
-const bookClasses = async (req, res) => {
+const getbookedClasses = async (req, res) => {
   const kakaoId = req.kakaoId;
 
-  const bookClasses = await accountService.bookClasses(kakaoId);
+  const bookedClasses = await accountService.getbookedClasses(kakaoId);
 
-  return res.status(200).json({ bookClasses: bookClasses });
+  return res.status(200).json({ bookedClasses: bookedClasses });
 };
 
-module.exports = { bookClasses };
+const cancelClasses = async (req, res) => {
+  const kakaoId = req.kakaoId;
+  const classId = req.params.classId;
+
+  await accountService.cancelClasses(kakaoId, classId);
+
+  return res.status(200).json({ message : "DELETE_CLASS_SUCCESS" });
+};
+
+module.exports = { getbookedClasses, cancelClasses };
+

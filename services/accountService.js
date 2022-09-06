@@ -2,7 +2,7 @@ const accountDao = require("../models/accountDao");
 const bookDao = require("../models/bookDao");
 const error = require("../middlewares/errorConstructor");
 
-const bookClasses = async (kakaoId) => {
+const getbookedClasses = async (kakaoId) => {
   const user = await bookDao.getUserIdBykakaoId(kakaoId);
   const userId = user.id;
 
@@ -10,9 +10,20 @@ const bookClasses = async (kakaoId) => {
     throw new error("KEY_ERROR", 400);
   }
 
-  const bookClasses = await accountDao.bookClasses(userId);
+  const bookedClasses = await accountDao.getbookedClasses(userId);
 
-  return bookClasses;
+  return bookedClasses;
 };
 
-module.exports = { bookClasses };
+const cancelClasses = async (kakaoId, classId) => {
+  const user = await bookDao.getUserIdBykakaoId(kakaoId);
+  const userId = user.id;
+
+  const isExist = await accountDao.existClass(userId, classId);
+
+  if (!isExist) throw new error("NONE_EXIST_CLASS", 400);
+
+  await accountDao.cancelClasses(userId, classId);
+};
+
+module.exports = { getbookedClasses, cancelClasses };
