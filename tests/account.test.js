@@ -7,8 +7,10 @@ describe("book class", () => {
 
   beforeAll(async () => {
     app = createApp();
-    await AppDataSource.query(`INSERT INTO bookings VALUES (1, 1), (2, 1), (1, 2)`)
     await AppDataSource.initialize();
+    await AppDataSource.query(
+      `INSERT INTO bookings(class_id, user_id) VALUES (5,1)`
+    );
   });
 
   afterAll(async () => {
@@ -23,7 +25,7 @@ describe("book class", () => {
       .get("/account/class")
       .set({
         Authorization:
-          "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjI0MDk5NzY5NjQsImlhdCI6MTY2MjM3NDUwMn0.IuluWRE_eZtGG6InfzabEbjwZGc3Bl5hfhzqaruOu2s",
+          "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjI0MDk5NzY5NjQsImlhdCI6MTY2MjQ2Nzk0M30.RGTjVyf9CzCi583Zn-cp2pCPiJwWB1o5CoW0IgOCEec",
       })
       .expect(200);
   });
@@ -32,8 +34,7 @@ describe("book class", () => {
     await request(app)
       .get("/account/class")
       .set({
-        Authorization:
-          "Bearer token",
+        Authorization: "Bearer token",
       })
       .expect(500);
   });

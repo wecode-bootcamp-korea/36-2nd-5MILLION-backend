@@ -5,7 +5,7 @@ const auth = require("../middlewares/auth");
 
 const router = express.Router();
 
-router.get("/class", auth.validationToken, errorHandler(accountController.bookedClasses));
+router.get("/class", auth.validationToken, errorHandler(accountController.bookClasses));
 
 module.exports = {
   router,
