@@ -1,6 +1,6 @@
 const { AppDataSource } = require("./dataSource");
 
-const bookClasses = async (userId) => {
+const getbookedClasses = async (userId) => {
   return await AppDataSource.query(
     `SELECT 
       b.id, 
@@ -18,4 +18,27 @@ const bookClasses = async (userId) => {
   );
 };
 
-module.exports = { bookClasses };
+const cancelClasses = async (userId, classId) => {
+  return await AppDataSource.query(
+    `DELETE 
+     FROM bookings 
+     WHERE class_id = ${classId} 
+     AND user_id = ${userId}`
+  );
+};
+
+const existClass = async (userId, classId) => {
+  const [existClass] = await AppDataSource.query(
+    `SELECT 
+      EXISTS (
+        SELECT 
+          id 
+        FROM bookings 
+        WHERE class_id = ${classId} AND user_id = ${userId}
+        ) as existClass`
+  );
+
+  return parseInt(existClass.existClass);
+};
+
+module.exports = { getbookedClasses, cancelClasses, existClass };
