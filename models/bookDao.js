@@ -1,7 +1,7 @@
-const { AppDataSource } = require("./dataSource");
+const { database } = require("./dataSource");
 
 const bookClass = async (classId, userId) => {
-  await AppDataSource.query(
+  const result = await database.query(
     `INSERT INTO bookings(
         class_id, 
         user_id
@@ -9,28 +9,32 @@ const bookClass = async (classId, userId) => {
 
     [classId, userId]
   );
+
+	return result.getLastInsertedId()
+
 };
 
 const getUserIdBykakaoId = async (kakaoId) => {
-  const [user] = await AppDataSource.query(
+  const user = await database.query(
     `SELECT 
       * 
      FROM users 
      WHERE kakao_id = ${kakaoId}`
   );
 
-  return user;
+  return user.fetchOne();
 };
 
 const existClass = async (classId, userId) => {
-  const [existClass] = await AppDataSource.query(
-    `SELECT count(*) 
+  const result = await database.query(
+    `SELECT EXISTS id 
      FROM bookings 
      WHERE class_id = ${classId} 
      AND user_id = ${userId}`
   );
 
-  return Object.values(existClass)[0];
+	return result.isExist()
+
 };
 
 module.exports = { bookClass, getUserIdBykakaoId, existClass };
