@@ -1,7 +1,7 @@
-const { AppDataSource } = require("./dataSource");
+const { database } = require("./dataSource");
 
 const signUp = async (nickname, email, kakaoId) => {
-  await AppDataSource.query(
+  const result = await database.query(
     `INSERT INTO users (
       name,
       email,
@@ -10,10 +10,12 @@ const signUp = async (nickname, email, kakaoId) => {
 
     [nickname, email, kakaoId]
   );
+
+  return result.getLastInsertedId();
 };
 
 const getUserByEmail = async (email) => {
-  const [user] = await AppDataSource.query(
+  const user = await database.query(
     `SELECT *
      FROM users
      WHERE email = ?`,
@@ -21,7 +23,7 @@ const getUserByEmail = async (email) => {
     [email]
   );
 
-  return user;
+  return user.fetchOne();
 };
 
 module.exports = { signUp, getUserByEmail };

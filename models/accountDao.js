@@ -1,7 +1,7 @@
-const { AppDataSource } = require("./dataSource");
+const { database } = require("./dataSource");
 
 const getbookedClasses = async (userId) => {
-  return await AppDataSource.query(
+  const result = await database.query(
     `SELECT 
       b.id, 
       i.name instructor, 
@@ -16,29 +16,20 @@ const getbookedClasses = async (userId) => {
     WHERE b.user_id = ${userId}
     ORDER BY start_time`
   );
+
+  return result.fetchAll();
 };
 
 const cancelClasses = async (userId, classId) => {
-  return await AppDataSource.query(
+  const result = await database.query(
     `DELETE 
      FROM bookings 
      WHERE class_id = ${classId} 
      AND user_id = ${userId}`
   );
+
+  if (!result.getAffectedRows() == 1) throw new Error("UNEXPECTED_ROWS_DELETED");
+  return result.getAffectedRows();
 };
 
-const existClass = async (userId, classId) => {
-  const [existClass] = await AppDataSource.query(
-    `SELECT 
-      EXISTS (
-        SELECT 
-          id 
-        FROM bookings 
-        WHERE class_id = ${classId} AND user_id = ${userId}
-        ) as existClass`
-  );
-
-  return parseInt(existClass.existClass);
-};
-
-module.exports = { getbookedClasses, cancelClasses, existClass };
+module.exports = { getbookedClasses, cancelClasses };
