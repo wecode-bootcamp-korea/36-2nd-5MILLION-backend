@@ -10,6 +10,11 @@ const bookClass = async (classId, kakaoId) => {
   const userId = user.id;
 
   const existClass = await bookDao.existClass(classId, userId);
+  const classInfo = await bookDao.checkSeats(classId);
+
+  if (classInfo.quantity <= classInfo.bookedCount) {
+    throw new error("FULLY_OCCUPIED_CLASS", 400);
+  }
 
   if (existClass >= 1) {
     throw new error("EXIST_CLASS", 400);

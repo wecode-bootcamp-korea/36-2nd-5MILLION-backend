@@ -33,4 +33,20 @@ const existClass = async (classId, userId) => {
   return Object.values(existClass)[0];
 };
 
-module.exports = { bookClass, getUserIdBykakaoId, existClass };
+const checkSeats = async (classId) => {
+  const [classInfo] = await AppDataSource.query(
+    `SELECT 
+      c.quantity, 
+      (
+        SELECT count(*) 
+        FROM bookings b 
+        WHERE b.class_id = c.id
+      ) as bookedCount 
+     FROM classes c
+     WHERE c.id = ${classId}`
+  );
+
+  return classInfo;
+};
+
+module.exports = { bookClass, getUserIdBykakaoId, existClass, checkSeats };
