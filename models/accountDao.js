@@ -7,7 +7,8 @@ const bookClasses = async (userId) => {
       i.name instructor, 
       DATE_FORMAT(c.start_time, '%H:%i') startTime, 
       DATE_FORMAT(c.end_time, '%H:%i') endTime, 
-      ct.level classType 
+      ct.level classType,
+      i.profile_image_url profileImage
     FROM bookings b 
     INNER JOIN classes c ON b.class_id = c.id 
     INNER JOIN instructors i ON c.instructor_id = i.id 
