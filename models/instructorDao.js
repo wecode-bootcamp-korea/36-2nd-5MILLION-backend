@@ -1,5 +1,23 @@
 const {AppDataSource} = require("./dataSource");
 
+const getInstructors = async (limit, offset) => {
+    try {
+        return await AppDataSource.query(`
+        SELECT
+            id,
+            name_en,
+            profile_image_url
+        FROM instructors 
+        LIMIT ${limit} OFFSET ${offset} 
+        `);
+    } 
+    catch(err) {
+        const error = new Error("INVALID_DATA_INPUT");
+        error.statusCode = 500;
+        throw error;
+    }
+};
+
 const getInstructorDetail = async (instructorId) => {
     try {
         return await AppDataSource.query(`
@@ -19,6 +37,7 @@ const getInstructorDetail = async (instructorId) => {
 };
 
 module.exports = {
+    getInstructors,
     getInstructorDetail
 };
 
