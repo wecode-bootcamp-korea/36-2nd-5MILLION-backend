@@ -4,26 +4,21 @@ const error = require("../middlewares/errorConstructor");
 
 const getbookedClasses = async (kakaoId) => {
   const user = await bookDao.getUserIdBykakaoId(kakaoId);
-  const userId = user.id;
 
-  if (!userId) {
-    throw new error("KEY_ERROR", 400);
-  }
+  if (!user.id) throw new error("KEY_ERROR", 400);
 
-  const bookedClasses = await accountDao.getbookedClasses(userId);
+  const bookedClasses = await accountDao.getbookedClasses(user.id);
 
   return bookedClasses;
 };
 
 const cancelClasses = async (kakaoId, classId) => {
   const user = await bookDao.getUserIdBykakaoId(kakaoId);
-  const userId = user.id;
+  const isExist = await bookDao.existClass(user.id, classId);
 
-  const isExist = await accountDao.existClass(userId, classId);
+  if (isExist) throw new error("NONE_EXIST_CLASS", 400);
 
-  if (!isExist) throw new error("NONE_EXIST_CLASS", 400);
-
-  await accountDao.cancelClasses(userId, classId);
+  await accountDao.cancelClasses(user.id, classId);
 };
 
 module.exports = { getbookedClasses, cancelClasses };

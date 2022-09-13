@@ -14,9 +14,8 @@ const signInWithKakao = async (kakaoToken) => {
   const email = result.data.kakao_account.email;
   const kakaoId = result.data.id;
 
-  if (!nickname || !email || !kakaoId) {
-    throw new error("KEY_ERROR", 400);
-  }
+  if (!nickname || !email || !kakaoId) throw new error("KEY_ERROR", 400);
+  
   const user = await authDao.getUserByEmail(email);
 
   if (!user) {

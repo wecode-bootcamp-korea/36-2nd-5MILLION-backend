@@ -1,4 +1,4 @@
-const { AppDataSource } = require("./dataSource");
+const { database } = require("./dataSource");
 
 const getSchedule = async (instructor, classType) => {
   if (!instructor) {
@@ -9,7 +9,7 @@ const getSchedule = async (instructor, classType) => {
     classType = null;
   }
 
-  const scheduleList = await AppDataSource.query(
+  const result = await database.query(
     `SELECT 
       day(start_time) as day, 
       CASE WEEKDAY(start_time) 
@@ -45,25 +45,29 @@ const getSchedule = async (instructor, classType) => {
     [instructor, instructor, instructor, classType, classType, classType]
   );
 
-  return scheduleList;
+  return result.fetchAll();
 };
 
 const getInstructors = async () => {
-  return await AppDataSource.query(
+  const result = await database.query(
     `SELECT 
       id, 
       name 
     FROM instructors`
   );
+
+  return result.fetchAll();
 };
 
 const getClassTypes = async () => {
-  return await AppDataSource.query(
+  const result = await database.query(
     `SELECT 
       id, 
       level 
     FROM class_types`
   );
+
+  return result.fetchAll();
 };
 
 module.exports = { getSchedule, getInstructors, getClassTypes };

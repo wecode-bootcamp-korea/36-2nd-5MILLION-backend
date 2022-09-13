@@ -2,7 +2,7 @@ const http = require("http");
 require("dotenv").config();
 
 const { createApp } = require("./app");
-const { AppDataSource } = require("./models/dataSource");
+const { database } = require("./models/dataSource");
 
 const startServer = async () => {
   const app = createApp();
@@ -14,7 +14,7 @@ const startServer = async () => {
   const server = http.createServer(app);
   const PORT = process.env.PORT;
 
-  await AppDataSource.initialize()
+  await database.database.initialize()
     .then(() => {
       console.log("Data Source has been initialized");
     })
